@@ -1,6 +1,6 @@
 TurtlePHP Config Plugin
 ===
-TurtlePHP configuration plugin which provides a standardized approach for
+TurtlePHP Configuration Plugin which provides a standardized approach for
 storing and retrieving an application&#039;s configuration settings.
 
 This plugin is most useful when used with the TurtlePHP
