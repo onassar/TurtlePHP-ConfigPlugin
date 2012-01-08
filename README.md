@@ -3,6 +3,10 @@ TurtlePHP Config Plugin
 TurtlePHP configuration plugin which provides a standardized approach for
 storing and retrieving an application&#039;s configuration settings.
 
+This plugin is most useful when used with the TurtlePHP
+[Roles](https://github.com/onassar/TurtlePHP-RolesPlugin) plugin.
+
+
 ### Example Storage
     <?php
     
@@ -14,7 +18,7 @@ storing and retrieving an application&#039;s configuration settings.
          * Cookies
          */
         $cookies = array(
-            'onassar' => array(
+            'local' => array(
                 'host' => '.local.turtlephp.com'
             ),
             'production' => array(
@@ -26,7 +30,7 @@ storing and retrieving an application&#039;s configuration settings.
          * PHP Runtime
          */
         $runtime = array(
-            'onassar' => array(
+            'local' => array(
                 'max_execution_time' => 3,
                 'memory_limit' => '16M'
             ),
