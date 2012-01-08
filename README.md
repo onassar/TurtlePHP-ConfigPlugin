@@ -7,7 +7,7 @@ storing and retrieving an application&#039;s configuration settings.
     /**
      * Config
      */
-    require_once APP . &#039;/plugins/Config.class.php&#039;;
-    require_once APP . &#039;/includes/setup/config.inc.php&#039;;
+    require_once APP . '/plugins/Config.class.php';
+    require_once APP . '/includes/setup/config.inc.php';
     $config = \Plugin\Config::retrieve();
 
