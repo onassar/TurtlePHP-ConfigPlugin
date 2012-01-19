@@ -4,7 +4,7 @@ TurtlePHP Config Plugin
 provides a standardized approach for storing and retrieving an
 application&#039;s configuration settings.  
 This plugin is most useful when used with the TurtlePHP
-[Roles](https://github.com/onassar/TurtlePHP-RolesPlugin) plugin.
+[Roles Plugin](https://github.com/onassar/TurtlePHP-RolesPlugin).
 
 
 ### Example Storage
