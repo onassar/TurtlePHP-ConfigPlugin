@@ -56,7 +56,7 @@ This plugin is most useful when used with the TurtlePHP
     /**
      * Config
      */
-    require_once APP . '/plugins/Config.class.php';
+    require_once APP . '/plugins/TurtlePHP-ConfigPlugin/Config.class.php';
     require_once APP . '/includes/setup/config.inc.php';
     $config = \Plugin\Config::retrieve();
 
