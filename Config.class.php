@@ -25,6 +25,20 @@
         protected static $_data;
 
         /**
+         * add
+         * 
+         * @access public
+         * @static
+         * @param  string $key
+         * @param  array $data
+         * @return array
+         */
+        public static function add($key, array $data)
+        {
+            self::$_data[$key] = $data;
+        }
+
+        /**
          * retrieve
          * 
          * @access public
