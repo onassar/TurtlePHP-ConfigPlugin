@@ -10,8 +10,8 @@
      * application configuration. While not comprehensive, clean and should be
      * used as a standard for TurtlePHP applications.
      *
-     * @abstract
      * @author   Oliver Nassar <onassar@gmail.com>
+     * @abstract
      */
     abstract class Config
     {
