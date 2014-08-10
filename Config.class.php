@@ -16,6 +16,15 @@
     abstract class Config
     {
         /**
+         * _configPath
+         *
+         * @var    string
+         * @access protected
+         * @static
+         */
+        protected static $_configPath = 'config.default.inc.php';
+
+        /**
          * _data
          *
          * @var    array
@@ -23,6 +32,15 @@
          * @static
          */
         protected static $_data;
+
+        /**
+         * _initiated
+         *
+         * @var    boolean
+         * @access protected
+         * @static
+         */
+        protected static $_initiated = false;
 
         /**
          * _cascade
@@ -85,6 +103,23 @@
         }
 
         /**
+         * init
+         * 
+         * @access public
+         * @static
+         * @return void
+         */
+        public static function init()
+        {
+            if (is_null(self::$_initiated) === false) {
+                self::$_initiated = true;
+                require_once self::$_configPath;
+                $config = \Plugin\Config::retrieve();
+                self::$_data = $config;
+            }
+        }
+
+        /**
          * retrieve
          *
          * @access public
@@ -94,6 +129,18 @@
         public static function retrieve()
         {
             return self::$_data;
+        }
+
+        /**
+         * setConfigPath
+         * 
+         * @access public
+         * @param  string $path
+         * @return void
+         */
+        public static function setConfigPath($path)
+        {
+            self::$_configPath = $path;
         }
 
         /**
@@ -109,3 +156,14 @@
             self::$_data = $data;
         }
     }
+
+    // Config
+    $info = pathinfo(__DIR__);
+    $parent = ($info['dirname']) . '/' . ($info['basename']);
+    $configPath = ($parent) . '/config.inc.php';
+    if (is_file($configPath)) {
+        Redirect::setConfigPath($configPath);
+    }
+
+    // Load global functions
+    require_once 'global.inc.php';
