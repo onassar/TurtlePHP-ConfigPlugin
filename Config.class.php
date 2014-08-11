@@ -27,11 +27,11 @@
         /**
          * _data
          *
-         * @var    array
+         * @var    array (default: array)
          * @access protected
          * @static
          */
-        protected static $_data;
+        protected static $_data = array();
 
         /**
          * _initiated
@@ -139,19 +139,6 @@
         public static function setConfigPath($path)
         {
             self::$_configPath = $path;
-        }
-
-        /**
-         * store
-         *
-         * @access public
-         * @static
-         * @param  array $data
-         * @return void
-         */
-        public static function store(array $data)
-        {
-            self::$_data = $data;
         }
     }
 
