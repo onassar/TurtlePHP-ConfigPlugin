@@ -61,8 +61,8 @@
          *
          * @access private
          * @static
-         * @param  Array &$variables
-         * @param  Array $key array of keys which are used to make associative
+         * @param  array &$variables
+         * @param  array $key array of keys which are used to make associative
          *         references in <$variables>
          * @param  mixed $mixed variable which is written to <$variables>
          *         reference, based on $keys as associative indexes
@@ -122,11 +122,23 @@
          *
          * @access public
          * @static
-         * @return array
+         * @return mixed
          */
         public static function retrieve()
         {
-            return self::$_data;
+            $args = func_get_args();
+            if (count($args) === 0) {
+                return self::$_data;
+            }
+            $current = self::$_data;
+            foreach ($args as $key) {
+                if (isset($current[$key])) {
+                    $current = $current[$key];
+                } else {
+                    throw new \Exception('Invalid config key');
+                }
+            }
+            return $current;
         }
 
         /**

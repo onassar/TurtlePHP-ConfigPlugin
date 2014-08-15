@@ -4,9 +4,13 @@
      * getConfig
      * 
      * @access public
-     * @return string
+     * @return mixed
      */
     function getConfig()
     {
-        return \Plugin\Config::retrieve();
+        $args = func_get_args();
+        return call_user_func_array(
+            array('\Plugin\Config', 'retrieve'),
+            $args
+        );
     }
