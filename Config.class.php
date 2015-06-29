@@ -88,7 +88,7 @@
          * @static
          * @param  string $key
          * @param  mixed $mixed
-         * @return array
+         * @return void
          */
         public static function add($key, array $mixed)
         {
