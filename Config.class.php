@@ -6,7 +6,7 @@
     /**
      * Config
      *
-     * Statically accessed <retrieve> and <store> methods to facilitate
+     * Statically accessed <retrieve> and <add> methods to facilitate
      * application configuration. While not comprehensive, clean and should be
      * used as a standard for TurtlePHP applications.
      *
@@ -16,31 +16,13 @@
     abstract class Config
     {
         /**
-         * _configPath
-         *
-         * @var    string
-         * @access protected
-         * @static
-         */
-        protected static $_configPath = 'config.default.inc.php';
-
-        /**
          * _data
          *
-         * @var    array (default: array)
-         * @access protected
+         * @var     array (default: array)
+         * @access  protected
          * @static
          */
         protected static $_data = array();
-
-        /**
-         * _initiated
-         *
-         * @var    boolean
-         * @access protected
-         * @static
-         */
-        protected static $_initiated = false;
 
         /**
          * _cascade
@@ -59,22 +41,25 @@
          *     'title' => 'title'
          * );
          *
-         * @access private
+         * @access  private
          * @static
-         * @param  array &$variables
-         * @param  array $key array of keys which are used to make associative
-         *         references in <$variables>
-         * @param  mixed $mixed variable which is written to <$variables>
-         *         reference, based on $keys as associative indexes
-         * @return void
+         * @param   array &$variables
+         * @param   array $keys array of keys which are used to make associative
+         *          references in <$variables>
+         * @param   mixed $mixed variable which is written to <$variables>
+         *          reference, based on $keys as associative indexes
+         * @return  void
          */
         private static function _cascade(array &$variables, array $keys, $mixed)
         {
             $key = array_shift($keys);
-            if (!isset($variables[$key]) || !is_array($variables[$key])) {
+            if (
+                isset($variables[$key]) === false
+                || is_array($variables[$key]) === false
+            ) {
                 $variables[$key] = array();
             }
-            if (!empty($keys)) {
+            if (empty($keys) === false) {
                 self::_cascade($variables[$key], $keys, $mixed);
             } else {
                 $variables[$key] = $mixed;
@@ -84,16 +69,16 @@
         /**
          * add
          *
-         * @access public
+         * @access  public
          * @static
-         * @param  string $key
-         * @param  mixed $mixed
-         * @return void
+         * @param   string $key
+         * @param   mixed $mixed
+         * @return  void
          */
         public static function add($key, array $mixed)
         {
             // if <$mixed> should be stored in a child-array
-            if (strstr($key, '.')) {
+            if (strstr($key, '.') !== false) {
                 $keys = explode('.', $key);
                 self::_cascade(self::$_data, $keys, $mixed);
 
@@ -103,26 +88,12 @@
         }
 
         /**
-         * init
-         * 
-         * @access public
-         * @static
-         * @return void
-         */
-        public static function init()
-        {
-            if (self::$_initiated === false) {
-                self::$_initiated = true;
-                require_once self::$_configPath;
-            }
-        }
-
-        /**
          * retrieve
          *
-         * @access public
+         * @throws  Exception
+         * @access  public
          * @static
-         * @return mixed
+         * @return  mixed
          */
         public static function retrieve()
         {
@@ -132,7 +103,7 @@
             }
             $current = self::$_data;
             foreach ($args as $key) {
-                if (isset($current[$key])) {
+                if (isset($current[$key]) === true) {
                     $current = $current[$key];
                 } else {
                     throw new \Exception('Invalid config key');
@@ -140,26 +111,6 @@
             }
             return $current;
         }
-
-        /**
-         * setConfigPath
-         * 
-         * @access public
-         * @param  string $path
-         * @return void
-         */
-        public static function setConfigPath($path)
-        {
-            self::$_configPath = $path;
-        }
-    }
-
-    // Config
-    $info = pathinfo(__DIR__);
-    $parent = ($info['dirname']) . '/' . ($info['basename']);
-    $configPath = ($parent) . '/config.inc.php';
-    if (is_file($configPath)) {
-        Redirect::setConfigPath($configPath);
     }
 
     // Load global functions
