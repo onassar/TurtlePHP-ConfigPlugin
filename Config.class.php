@@ -88,6 +88,19 @@
         }
 
         /**
+         * remove
+         *
+         * @access  public
+         * @static
+         * @param   string $key
+         * @return  void
+         */
+        public static function remove($key)
+        {
+            unset(self::$_data[$key]);
+        }
+
+        /**
          * retrieve
          *
          * @throws  Exception
