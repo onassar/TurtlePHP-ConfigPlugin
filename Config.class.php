@@ -119,7 +119,8 @@
                 if (isset($current[$key]) === true) {
                     $current = $current[$key];
                 } else {
-                    throw new \Exception('Invalid config key');
+                    $msg = 'Invalid config key';
+                    throw new \Exception($msg);
                 }
             }
             return $current;
