@@ -9,8 +9,9 @@
     function getConfig()
     {
         $args = func_get_args();
-        return call_user_func_array(
+        $value = call_user_func_array(
             array('\Plugin\Config', 'retrieve'),
             $args
         );
+        return $value;
     }
