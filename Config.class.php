@@ -18,8 +18,8 @@
         /**
          * _data
          *
-         * @var     array (default: array)
          * @access  protected
+         * @var     array (default: array)
          * @static
          */
         protected static $_data = array();
