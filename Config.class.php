@@ -19,7 +19,7 @@
          * _data
          *
          * @access  protected
-         * @var     array (default: array)
+         * @var     array (default: array())
          * @static
          */
         protected static $_data = array();
