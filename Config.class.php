@@ -118,10 +118,10 @@
             foreach ($args as $key) {
                 if (isset($current[$key]) === true) {
                     $current = $current[$key];
-                } else {
-                    $msg = 'Invalid config key';
-                    throw new \Exception($msg);
+                    continue;
                 }
+                $msg = 'Invalid config key';
+                throw new \Exception($msg);
             }
             return $current;
         }
