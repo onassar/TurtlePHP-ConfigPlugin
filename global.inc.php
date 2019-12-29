@@ -4,14 +4,13 @@
      * getConfig
      * 
      * @access  public
+     * @param   array $keys,...
      * @return  mixed
      */
-    function getConfig()
+    function getConfig(... $keys)
     {
-        $args = func_get_args();
-        $value = call_user_func_array(
-            array('\Plugin\Config', 'retrieve'),
-            $args
-        );
+        $params = $keys;
+        $callback = array('\Plugin\Config', 'retrieve');
+        $value = call_user_func_array($callback, $params);
         return $value;
     }
