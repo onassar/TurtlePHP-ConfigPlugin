@@ -72,18 +72,18 @@
          * @access  public
          * @static
          * @param   string $key
-         * @param   mixed $mixed
+         * @param   mixed $data
          * @return  void
          */
-        public static function add($key, array $mixed)
+        public static function add($key, array $data): void
         {
-            // if <$mixed> should be stored in a child-array
+            // if $data should be stored in a child-array
             if (strstr($key, '.') !== false) {
                 $keys = explode('.', $key);
-                self::_cascade(self::$_data, $keys, $mixed);
+                self::_cascade(self::$_data, $keys, $data);
 
             } else {
-                self::$_data[$key] = $mixed;
+                self::$_data[$key] = $data;
             }
         }
 
