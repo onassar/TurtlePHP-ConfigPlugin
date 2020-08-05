@@ -103,7 +103,7 @@
         /**
          * retrieve
          *
-         * @throws  Exception
+         * @throws  \Exception
          * @access  public
          * @static
          * @return  mixed
