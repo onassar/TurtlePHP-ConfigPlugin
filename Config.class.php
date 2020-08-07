@@ -107,7 +107,7 @@
          * @param   mixed $data
          * @return  bool
          */
-        public static function add($key, array $data): bool
+        public static function add(string $key, array $data): bool
         {
             // if $data should be stored in a child-array
             if (strstr($key, '.') !== false) {
@@ -127,7 +127,7 @@
          * @param   string $key
          * @return  void
          */
-        public static function remove($key)
+        public static function remove(string $key): void
         {
             unset(static::$_data[$key]);
         }
@@ -138,24 +138,21 @@
          * @throws  \Exception
          * @access  public
          * @static
+         * @param   array $keys,...
          * @return  mixed
          */
-        public static function retrieve()
+        public static function retrieve(... $keys)
         {
-            $args = func_get_args();
-            if (count($args) === 0) {
-                return static::$_data;
-            }
-            $current = static::$_data;
-            foreach ($args as $key) {
-                if (isset($current[$key]) === true) {
-                    $current = $current[$key];
-                    continue;
+            $data = static::$_data;
+            $value = $data;
+            foreach ($keys as $key) {
+                $value = $value[$key] ?? null;
+                if ($value === null) {
+                    $msg = 'Invalid Plugin\Config retrieve key';
+                    throw new \Exception($msg);
                 }
-                $msg = 'Invalid config key';
-                throw new \Exception($msg);
             }
-            return $current;
+            return $value;
         }
 
         /**
