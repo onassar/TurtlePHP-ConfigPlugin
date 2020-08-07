@@ -5,6 +5,8 @@
 
     /**
      * Config
+     * 
+     * Config plugin for TurtlePHP.
      *
      * Statically accessed <retrieve> and <add> methods to facilitate
      * application configuration. While not comprehensive, clean and should be
@@ -12,9 +14,19 @@
      *
      * @author  Oliver Nassar <onassar@gmail.com>
      * @abstract
+     * @extends Base
      */
-    abstract class Config
+    abstract class Config extends Base
     {
+        /**
+         * _configPath
+         *
+         * @access  protected
+         * @var     string (default: 'config.default.inc.php')
+         * @static
+         */
+        protected static $_configPath = 'config.default.inc.php';
+
         /**
          * _data
          *
@@ -23,6 +35,15 @@
          * @static
          */
         protected static $_data = array();
+
+        /**
+         * _initiated
+         *
+         * @access  protected
+         * @var     bool (default: false)
+         * @static
+         */
+        protected static $_initiated = false;
 
         /**
          * _cascade
@@ -50,7 +71,7 @@
          *          reference, based on $keys as associative indexes
          * @return  void
          */
-        private static function _cascade(array &$variables, array $keys, $mixed)
+        private static function _cascade(array &$variables, array $keys, $mixed): void
         {
             $key = array_shift($keys);
             if (
@@ -60,10 +81,21 @@
                 $variables[$key] = array();
             }
             if (empty($keys) === false) {
-                self::_cascade($variables[$key], $keys, $mixed);
+                static::_cascade($variables[$key], $keys, $mixed);
             } else {
                 $variables[$key] = $mixed;
             }
+        }
+
+        /**
+         * _checkDependencies
+         * 
+         * @access  protected
+         * @static
+         * @return  void
+         */
+        protected static function _checkDependencies(): void
+        {
         }
 
         /**
@@ -73,18 +105,18 @@
          * @static
          * @param   string $key
          * @param   mixed $data
-         * @return  void
+         * @return  bool
          */
-        public static function add($key, array $data): void
+        public static function add($key, array $data): bool
         {
             // if $data should be stored in a child-array
             if (strstr($key, '.') !== false) {
                 $keys = explode('.', $key);
-                self::_cascade(self::$_data, $keys, $data);
-
-            } else {
-                self::$_data[$key] = $data;
+                static::_cascade(static::$_data, $keys, $data);
+                return true;
             }
+            static::$_data[$key] = $data;
+            return true;
         }
 
         /**
@@ -97,7 +129,7 @@
          */
         public static function remove($key)
         {
-            unset(self::$_data[$key]);
+            unset(static::$_data[$key]);
         }
 
         /**
@@ -112,9 +144,9 @@
         {
             $args = func_get_args();
             if (count($args) === 0) {
-                return self::$_data;
+                return static::$_data;
             }
-            $current = self::$_data;
+            $current = static::$_data;
             foreach ($args as $key) {
                 if (isset($current[$key]) === true) {
                     $current = $current[$key];
@@ -125,7 +157,26 @@
             }
             return $current;
         }
+
+        /**
+         * init
+         * 
+         * @access  public
+         * @static
+         * @return  bool
+         */
+        public static function init(): bool
+        {
+            if (static::$_initiated === true) {
+                return false;
+            }
+            parent::init();
+            return true;
+        }
     }
 
-    // Load global functions
-    require_once 'global.inc.php';
+    // Config path loading
+    $info = pathinfo(__DIR__);
+    $parent = ($info['dirname']) . '/' . ($info['basename']);
+    $configPath = ($parent) . '/config.inc.php';
+    \Plugin\Config::setConfigPath($configPath);
