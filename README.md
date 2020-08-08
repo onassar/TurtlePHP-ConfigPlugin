@@ -2,11 +2,8 @@ TurtlePHP-ConfigPlugin
 ======================
 
 [TurtlePHP](https://github.com/onassar/TurtlePHP) Configuration Plugin which
-provides a standardized approach for storing and retrieving an
-application&#039;s configuration settings.  
-This plugin is most useful when used with the TurtlePHP
-[Roles Plugin](https://github.com/onassar/TurtlePHP-RolesPlugin).
-
+provides a standardized approach for getting, setting and removing config
+settings.
 
 ### Sample plugin loading:
 ``` php
@@ -17,57 +14,32 @@ Plugin\Config::setConfigPath($path);
 Plugin\Config::init();
 ```
 
-### Example Storage
+### Sample get
 ``` php
-<?php
-
-    // setting initializing
-    $cookies = array();
-    $runtime = array();
-
-    /**
-     * Cookies
-     */
-    $cookies = array(
-        'local' => array(
-            'host' => '.local.turtlephp.com'
-        ),
-        'production' => array(
-            'host' => '.turtlephp.com'
-        )
-    );
-    
-    /**
-     * PHP Runtime
-     */
-    $runtime = array(
-        'local' => array(
-            'max_execution_time' => 3,
-            'memory_limit' => '16M'
-        ),
-        'production' => array(
-            'max_execution_time' => 10,
-            'memory_limit' => '128M'
-        )
-    );
-
-    // config storage
-    \Plugin\Config::store(array(
-        'cookies' => $cookies,
-        'runtime' => $runtime
-    ));
-
+Plugin\Config::get('key');
+Plugin\Config::get('key.subkey');
+Plugin\Config::get('key', 'subkey');
+Plugin\Config::get('key', 'subkey.subsubkey');
 ```
 
-### Example Retrieval
+### Sample set
 ``` php
-<?php
+Plugin\Config::set('key', 'value');
+Plugin\Config::set('key.subkey', 'value');
+Plugin\Config::set(array('key', 'subkey'), 'value');
+```
 
-    /**
-     * Config
-     */
-    require_once APP . '/plugins/TurtlePHP-ConfigPlugin/Config.class.php';
-    require_once APP . '/includes/setup/config.inc.php';
-    $config = \Plugin\Config::retrieve();
+### Sample merge
+``` php
+Plugin\Config::set('key.subkey', 'value');
+Plugin\Config::merge('key.subkey', 'value2');
+Plugin\Config::merge(array('key', 'subkey'), 'value2');
+```
 
+### Sample remove
+``` php
+Plugin\Config::remove('key');
+Plugin\Config::remove('key.subkey');
+Plugin\Config::remove('key', 'subkey');
+Plugin\Config::remove('key', 'subkey.subsubkey');
 ```

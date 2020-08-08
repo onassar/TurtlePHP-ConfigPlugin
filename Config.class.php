@@ -9,7 +9,7 @@
      * Config plugin for TurtlePHP.
      *
      * Statically accessed <retrieve> and <add> methods to facilitate
-     * application configuration. While not comprehensive, clean and should be
+     * application configuration. While not comprehensive, clean, and should be
      * used as a standard for TurtlePHP applications.
      *
      * @author  Oliver Nassar <onassar@gmail.com>
@@ -20,7 +20,7 @@
     {
         /**
          * _configPath
-         *
+         * 
          * @access  protected
          * @var     string (default: 'config.default.inc.php')
          * @static
@@ -29,7 +29,7 @@
 
         /**
          * _data
-         *
+         * 
          * @access  protected
          * @var     array (default: array())
          * @static
@@ -38,54 +38,12 @@
 
         /**
          * _initiated
-         *
+         * 
          * @access  protected
          * @var     bool (default: false)
          * @static
          */
         protected static $_initiated = false;
-
-        /**
-         * _cascade
-         *
-         * Writes data, recursively, to child-array's in order to allow variable
-         * passing in the following syntax:
-         *
-         * $this->_pass('name', 'value');
-         * $this->_pass('page.title', 'title');
-         *
-         * Based on the above syntax, the following variables are available to
-         * the view:
-         *
-         * $name = 'value';
-         * $page = array(
-         *     'title' => 'title'
-         * );
-         *
-         * @access  private
-         * @static
-         * @param   array &$variables
-         * @param   array $keys array of keys which are used to make associative
-         *          references in <$variables>
-         * @param   mixed $mixed variable which is written to <$variables>
-         *          reference, based on $keys as associative indexes
-         * @return  void
-         */
-        private static function _cascade(array &$variables, array $keys, $mixed): void
-        {
-            $key = array_shift($keys);
-            if (
-                isset($variables[$key]) === false
-                || is_array($variables[$key]) === false
-            ) {
-                $variables[$key] = array();
-            }
-            if (empty($keys) === false) {
-                static::_cascade($variables[$key], $keys, $mixed);
-            } else {
-                $variables[$key] = $mixed;
-            }
-        }
 
         /**
          * _checkDependencies
@@ -99,58 +57,158 @@
         }
 
         /**
-         * add
-         *
+         * _get
+         * 
+         * @access  protected
+         * @static
+         * @param   array $keys
+         * @return  mixed
+         */
+        protected static function _get(array $keys)
+        {
+            $indexedKeys = static::_getIndexedKeys($keys);
+            $value = static::$_data;
+            foreach ($indexedKeys as $key) {
+                $value = $value[$key] ?? null;
+                if ($value === null) {
+                    return null;
+                }
+            }
+            return $value;
+        }
+
+        /**
+         * _getIndexedKeys
+         * 
+         * Returns an array of keys that is numerically-indexed to ensure a
+         * consistent approach to working with the keys passed in.
+         * 
+         * @access  protected
+         * @static
+         * @param   array $keys
+         * @return  array
+         */
+        protected static function _getIndexedKeys(array $keys): array
+        {
+            if (count($keys) === 0) {
+                return $keys;
+            }
+            $keys = implode('.', $keys);
+            $keys = explode('.', $keys);
+            return $keys;
+        }
+
+        /**
+         * _removeValueByKeys
+         * 
+         * @access  protected
+         * @static
+         * @param   array $keys
+         * @return  array
+         */
+        protected static function _removeValueByKeys(array $keys): void
+        {
+            $indexedKeys = static::_getIndexedKeys($keys);
+            $value = static::$_data;
+            foreach ($indexedKeys as $index => $key) {
+                $parent = $value;
+                $value = $value[$key];
+            }
+            unset($parent[$key]);
+            array_pop($indexedKeys);
+            $key = implode('.', $indexedKeys);
+            static::add($key, $parent);
+            // static::set($key, $parent);
+        }
+
+        /**
+         * set
+         * 
+         * @todo
          * @access  public
          * @static
-         * @param   string $key
-         * @param   mixed $data
+         * @param   mixed $keys
+         * @param   mixed $incomingValue
+         * @return  void
+         */
+        // public static function set($keys, $incomingValue): void
+        public static function add($keys, $incomingValue): void
+        {
+            $keys = (array) $keys;
+            $indexedKeys = static::_getIndexedKeys($keys);
+            $value = &static::$_data;
+            foreach ($indexedKeys as $key) {
+                if (isset($value[$key]) === false) {
+                    $value[$key] = array();
+                    $value = &$value[$key];
+                    continue;
+                }
+                $value = &$value[$key];
+            }
+            $value = $incomingValue;
+        }
+
+        /**
+         * merge
+         * 
+         * @access  public
+         * @static
+         * @param   mixed $key
+         * @param   mixed $incomingValue
          * @return  bool
          */
-        public static function add(string $key, array $data): bool
+        public static function merge($keys, $incomingValue): bool
         {
-            // if $data should be stored in a child-array
-            if (strstr($key, '.') !== false) {
-                $keys = explode('.', $key);
-                static::_cascade(static::$_data, $keys, $data);
-                return true;
+            $keys = (array) $keys;
+            $existingValue = static::_get($keys);
+            if ($existingValue === null) {
+                static::add($keys, $incomingValue);
+                // static::set($keys, $incomingValue);
+                return false;
             }
-            static::$_data[$key] = $data;
+            $existingValue = (array) $existingValue;
+            $incomingValue = (array) $incomingValue;
+            $mergedValue = array_merge($existingValue, $incomingValue);
+            static::add($keys, $mergedValue);
+            // static::set($keys, $mergedValue);
             return true;
         }
 
         /**
          * remove
-         *
+         * 
+         * @todo
          * @access  public
          * @static
-         * @param   string $key
-         * @return  void
+         * @param   array $keys,...
+         * @return  bool
          */
-        public static function remove(string $key): void
+        public static function remove(... $keys): bool
         {
-            unset(static::$_data[$key]);
+            $value = static::_get($keys);
+            if ($value === null) {
+                return false;
+            }
+            static::_removeValueByKeys($keys);
+            return true;
         }
 
         /**
-         * retrieve
-         *
+         * get
+         * 
          * @throws  \Exception
          * @access  public
          * @static
          * @param   array $keys,...
          * @return  mixed
          */
+        // public static function get(... $keys)
         public static function retrieve(... $keys)
         {
-            $data = static::$_data;
-            $value = $data;
-            foreach ($keys as $key) {
-                $value = $value[$key] ?? null;
-                if ($value === null) {
-                    $msg = 'Invalid Plugin\Config retrieve key';
-                    throw new \Exception($msg);
-                }
+            $value = static::_get($keys);
+            if ($value === null) {
+                $msg = 'Invalid Plugin\Config::get $key value: ' . ($key);
+                throw new \Exception($msg);
             }
             return $value;
         }
