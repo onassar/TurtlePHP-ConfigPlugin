@@ -1,7 +1,7 @@
 <?php
 
     // namespace
-    namespace Plugin;
+    namespace TurtlePHP\Plugin;
 
     /**
      * Config
@@ -117,35 +117,26 @@
             unset($parent[$key]);
             array_pop($indexedKeys);
             $key = implode('.', $indexedKeys);
-            static::add($key, $parent);
-            // static::set($key, $parent);
+            static::set($key, $parent);
         }
 
         /**
-         * set
+         * get
          * 
-         * @todo
+         * @throws  \Exception
          * @access  public
          * @static
-         * @param   mixed $keys
-         * @param   mixed $incomingValue
-         * @return  void
+         * @param   array $keys,...
+         * @return  mixed
          */
-        // public static function set($keys, $incomingValue): void
-        public static function add($keys, $incomingValue): void
+        public static function get(... $keys)
         {
-            $keys = (array) $keys;
-            $indexedKeys = static::_getIndexedKeys($keys);
-            $value = &static::$_data;
-            foreach ($indexedKeys as $key) {
-                if (isset($value[$key]) === false) {
-                    $value[$key] = array();
-                    $value = &$value[$key];
-                    continue;
-                }
-                $value = &$value[$key];
+            $value = static::_get($keys);
+            if ($value === null) {
+                $msg = 'Invalid TurtlePHP\Plugin\Config::get $key value: ' . ($key);
+                throw new \Exception($msg);
             }
-            $value = $incomingValue;
+            return $value;
         }
 
         /**
@@ -162,15 +153,13 @@
             $keys = (array) $keys;
             $existingValue = static::_get($keys);
             if ($existingValue === null) {
-                static::add($keys, $incomingValue);
-                // static::set($keys, $incomingValue);
+                static::set($keys, $incomingValue);
                 return false;
             }
             $existingValue = (array) $existingValue;
             $incomingValue = (array) $incomingValue;
             $mergedValue = array_merge($existingValue, $incomingValue);
-            static::add($keys, $mergedValue);
-            // static::set($keys, $mergedValue);
+            static::set($keys, $mergedValue);
             return true;
         }
 
@@ -194,26 +183,6 @@
         }
 
         /**
-         * get
-         * 
-         * @throws  \Exception
-         * @access  public
-         * @static
-         * @param   array $keys,...
-         * @return  mixed
-         */
-        // public static function get(... $keys)
-        public static function retrieve(... $keys)
-        {
-            $value = static::_get($keys);
-            if ($value === null) {
-                $msg = 'Invalid Plugin\Config::get $key value: ' . ($key);
-                throw new \Exception($msg);
-            }
-            return $value;
-        }
-
-        /**
          * init
          * 
          * @access  public
@@ -228,10 +197,36 @@
             parent::init();
             return true;
         }
+
+        /**
+         * set
+         * 
+         * @todo
+         * @access  public
+         * @static
+         * @param   mixed $keys
+         * @param   mixed $incomingValue
+         * @return  void
+         */
+        public static function set($keys, $incomingValue): void
+        {
+            $keys = (array) $keys;
+            $indexedKeys = static::_getIndexedKeys($keys);
+            $value = &static::$_data;
+            foreach ($indexedKeys as $key) {
+                if (isset($value[$key]) === false) {
+                    $value[$key] = array();
+                    $value = &$value[$key];
+                    continue;
+                }
+                $value = &$value[$key];
+            }
+            $value = $incomingValue;
+        }
     }
 
     // Config path loading
     $info = pathinfo(__DIR__);
     $parent = ($info['dirname']) . '/' . ($info['basename']);
     $configPath = ($parent) . '/config.inc.php';
-    \Plugin\Config::setConfigPath($configPath);
+    \TurtlePHP\Plugin\Config::setConfigPath($configPath);

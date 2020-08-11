@@ -1,12 +1,6 @@
 <?php
 
     /**
-     * Namespace
-     * 
-     */
-    namespace Plugin\Config;
-
-    /**
      * Plugin Config Data
      * 
      */
@@ -17,4 +11,4 @@
      * 
      */
     $key = 'TurtlePHP-ConfigPlugin';
-    \Plugin\Config::add($key, $pluginConfigData);
+    TurtlePHP\Plugin\Config::set($key, $pluginConfigData);
