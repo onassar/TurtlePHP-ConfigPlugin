@@ -140,6 +140,22 @@
         }
 
         /**
+         * init
+         * 
+         * @access  public
+         * @static
+         * @return  bool
+         */
+        public static function init(): bool
+        {
+            if (static::$_initiated === true) {
+                return false;
+            }
+            parent::init();
+            return true;
+        }
+
+        /**
          * merge
          * 
          * @access  public
@@ -179,22 +195,6 @@
                 return false;
             }
             static::_removeValueByKeys($keys);
-            return true;
-        }
-
-        /**
-         * init
-         * 
-         * @access  public
-         * @static
-         * @return  bool
-         */
-        public static function init(): bool
-        {
-            if (static::$_initiated === true) {
-                return false;
-            }
-            parent::init();
             return true;
         }
 
