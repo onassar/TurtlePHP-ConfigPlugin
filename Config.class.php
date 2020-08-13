@@ -133,7 +133,10 @@
         {
             $value = static::_get($keys);
             if ($value === null) {
-                $msg = 'Invalid TurtlePHP\Plugin\Config::get $key value: ' . ($key);
+                $indexedKeys = static::_getIndexedKeys($keys);
+                $key = implode('.', $indexedKeys);
+                $msg = 'Invalid TurtlePHP\Plugin\Config::get $key value:';
+                $msg = ($msg) . ' ' . ($key);
                 throw new \Exception($msg);
             }
             return $value;
@@ -182,7 +185,6 @@
         /**
          * remove
          * 
-         * @todo
          * @access  public
          * @static
          * @param   array $keys,...
@@ -201,7 +203,6 @@
         /**
          * set
          * 
-         * @todo
          * @access  public
          * @static
          * @param   mixed $keys
