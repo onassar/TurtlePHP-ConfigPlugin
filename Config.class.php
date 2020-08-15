@@ -121,6 +121,25 @@
         }
 
         /**
+         * _validateKeyValues
+         * 
+         * @throws  \Exception
+         * @access  protected
+         * @static
+         * @param   array $keys,...
+         * @return  void
+         */
+        protected static function _validateKeyValues(... $keys): void
+        {
+            foreach ($keys as $key) {
+                if (is_array($key) === true) {
+                    $msg = 'Key must be a string';
+                    throw new \Exception($msg);
+                }
+            }
+        }
+
+        /**
          * get
          * 
          * @throws  \Exception
@@ -131,6 +150,7 @@
          */
         public static function get(... $keys)
         {
+            static::_validateKeyValues(... $keys);
             $value = static::_get($keys);
             if ($value === null) {
                 $indexedKeys = static::_getIndexedKeys($keys);
@@ -192,6 +212,7 @@
          */
         public static function remove(... $keys): bool
         {
+            static::_validateKeyValues(... $keys);
             $value = static::_get($keys);
             if ($value === null) {
                 return false;

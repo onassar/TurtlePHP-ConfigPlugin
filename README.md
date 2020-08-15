@@ -2,8 +2,8 @@ TurtlePHP-ConfigPlugin
 ======================
 
 [TurtlePHP](https://github.com/onassar/TurtlePHP) Configuration Plugin which
-provides a standardized approach for getting, setting and removing config
-settings.
+provides a standardized approach for getting, setting, merging and removing
+config settings.
 
 ### Sample plugin loading:
 ``` php
