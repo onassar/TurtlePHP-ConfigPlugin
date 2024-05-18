@@ -142,7 +142,6 @@
         /**
          * get
          * 
-         * @throws  \Exception
          * @access  public
          * @static
          * @param   array $keys,...
@@ -152,13 +151,6 @@
         {
             static::_validateKeyValues(... $keys);
             $value = static::_get($keys);
-            if ($value === null) {
-                $indexedKeys = static::_getIndexedKeys($keys);
-                $key = implode('.', $indexedKeys);
-                $msg = 'Invalid TurtlePHP\Plugin\Config::get $key value:';
-                $msg = ($msg) . ' ' . ($key);
-                throw new \Exception($msg);
-            }
             return $value;
         }
 
