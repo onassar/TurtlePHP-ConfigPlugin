@@ -7,11 +7,11 @@
      * Config
      * 
      * Config plugin for TurtlePHP.
-     *
+     * 
      * Statically accessed <retrieve> and <add> methods to facilitate
      * application configuration. While not comprehensive, clean, and should be
      * used as a standard for TurtlePHP applications.
-     *
+     * 
      * @author  Oliver Nassar <onassar@gmail.com>
      * @abstract
      * @extends Base
